@@ -1,0 +1,16 @@
+.login-form{
+    width: 300px;
+    margin: 250px auto;
+}
+.button-form{
+    width: 100%;
+}
+.reset{
+    margin-left: 50px;
+    float: left;
+
+}
+.login{
+    margin-right: 50px;
+    float: right;
+}

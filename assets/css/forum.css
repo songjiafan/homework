@@ -1,0 +1,46 @@
+ul{
+    list-style: none;
+}
+#new_comment{
+    margin-bottom: 20px;
+}
+.forum-see{
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 10px;
+    padding: 15px;
+    background-color: #E5E9F2;
+    height: 250px;
+}
+.title{
+    height: 50px;
+    line-height: 70px;
+    padding-left: 50px;
+    font-family: "FontAwesome", sans-serif;
+    font-weight: bold;
+}
+.content{
+    font-family: "FontAwesome", sans-serif;
+    padding: 20px;
+    text-indent: 20px;
+}
+.nav_ul{
+    margin: 10px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    width: 200px;
+}
+.del_comment{
+    float: right;
+    margin-right: 20px;
+}
+.comment-box{
+    margin-bottom: 20px;
+}
+.forum-content{
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    border-radius: 5px;
+}

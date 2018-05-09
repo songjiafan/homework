@@ -1,0 +1,12 @@
+body{
+    background-color: #EFF2F7;
+}
+#container{
+    width: 80%;
+    height: 200px;
+    margin: 100px auto;
+}
+a{
+    text-decoration: none;
+}
+
