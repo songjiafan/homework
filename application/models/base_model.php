@@ -10,5 +10,4 @@ class base_model extends CI_Model{
     }
     // 通过姓名获取该学生信息 返回结果集
 
-
 }

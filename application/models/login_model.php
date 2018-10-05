@@ -13,7 +13,11 @@ class Login_model extends CI_Model{
     public function check_password($uid, $pwd){
         return $this -> db -> get_where('user', array('uid' => $uid, 'password' => $pwd)) -> result();
         // 此处sql为 "SELECT * FROM user WHERE uid = $uid AND password = $pwd;" result返回结果集
+    }
 
+    public function get_file(){
+        $this->db->order_by('upload_time', 'DESC');
+        return $this -> db -> get_where('file', []) -> result();
     }
 
 }

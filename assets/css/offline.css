@@ -1,0 +1,9 @@
+.item{
+    border: 1px solid #bbb;
+    width: 25%;
+    height: 250px;
+    margin: 40px;
+    padding: 20px;
+    box-shadow: #ccc 3px 3px ;
+    float: left;
+}

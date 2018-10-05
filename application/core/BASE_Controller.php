@@ -7,7 +7,7 @@ class BASE_Controller extends CI_Controller {
 
     public function __construct(){
         parent::__construct();
-
+        date_default_timezone_set("Asia/Shanghai");
         // 执行父类构造函数 不用也可
         self::$_loginUserInfo = $this -> session -> userdata('loginUser');
         if (empty(self::$_loginUserInfo)) {

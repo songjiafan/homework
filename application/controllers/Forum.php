@@ -12,99 +12,68 @@ class Forum extends BASE_Controller {
     }
 
     public function index () {
-        // 第二版写模糊查询 第一版先不加查询功能
-        // $comment = $this -> input -> get('comment');
-        $forumList = $this -> forum_model -> get_list([]);
-        foreach ($forumList as $item) {
-            $commentData = $this -> forum_model -> get_comment_count(array('forum_id' => $item -> id));
-            $item -> count = $commentData;
+        $this -> load -> model('login_model');
+        $list = $this -> forum_model -> get_list();
+        foreach ($list as $k => $v) {
+            $name = $this -> login_model -> check_exist($v->uid);
+            $v -> name = $name[0] -> username;
+            if ($v->pid) {
+                $reply_name = $this -> login_model -> check_exist($v->pid);
+                $v -> reply_name = $reply_name[0] -> username; // 回复人中文名
+            }
         }
-        $renderData = [];
-        $renderData['forumList'] = $forumList;
-        $renderData['admin'] = self::$_loginUserInfo -> role == 1;
+        $renderData = [
+            'admin' => self::$_loginUserInfo -> is_admin,
+            'role' => self::$_loginUserInfo -> role,
+            'username' => self::$_loginUserInfo -> username,
+            'list' => $list
+        ];
         $this -> load -> view('forum', $renderData);
+        // 渲染 带一个是否管理员参数
     }
 
-    public function add () {
-        // 新增文章
-        $postData = [];
-        $postData['title'] = $this -> input -> post('title');
-        $postData['content'] = $this -> input -> post('content');
-        // 接受$.post传过来的参数
-        $postData['check_status'] = 0;
-        $postData['author_id'] = self::$_loginUserInfo -> uid;
-        $postData['author_username'] = self::$_loginUserInfo -> username;
-        // 参数补充
-        $addRes = $this -> forum_model -> new_forum($postData);
-        // 调用新增方法
-        if ($addRes) {
-            $this -> showResult(0, '发布成功 等待审核');
-        } else {
-            $this -> showResult(1, '发布失败 内部错误');
-        }
-        // 判断返回值来确定返回json的参数
-    }
 
-    public function content () {
-        // 查询每个页面内容
-        $queryParams = [];
-        $queryParams['id'] = $this -> input -> get('forum_id');
-        // 获取url中的forum_id参数
-        $forumData = $this -> forum_model -> get_list($queryParams);
-        $commentData = $this -> forum_model -> get_comment_by_id(array('forum_id' => $forumData[0] -> id));
-        // 获取页面基本信息 包括帖子内容和评论
-        $renderData = [];
-        $renderData['commentData'] = $commentData;
-        $renderData['forumData'] = $forumData[0];
-        $renderData['admin'] = self::$_loginUserInfo -> role;
-        // 渲染参数初始化 填充 权限
-        $this -> load -> view('forum_content', $renderData);
-        // 渲染
-    }
-
-    public function add_comment () {
-        // 新增评论
-        $postData = [];
-        $postData['forum_id'] = $this -> input -> post('forum_id');
-        $postData['content'] = $this -> input -> post('content');
-        // 获取$.post发送来的参数
-        $postData['check_status'] = 0;
-        $postData['create_time'] = date('Y-m-d H:i:s');
-        $postData['author_id'] = self::$_loginUserInfo -> uid;
-        $postData['author_username'] = self::$_loginUserInfo -> username;
-
-        $addRes = $this -> forum_model -> new_comment($postData);
-        if ($addRes) {
-            $this -> showResult(0, '评论成功 等待审核');
+    public function reply () {
+        $pid = $this -> input -> post('id');  // 获取传送的id参数
+        $content = $this -> input -> post('content');  // 获取传送的content参数
+        $uid = self::$_loginUserInfo -> uid;
+        $postData = [
+            'pid' => $pid,
+            'content' => $content,
+            'uid' => $uid
+        ];
+        $res = $this -> forum_model -> reply($postData); // 调用model方法 添加线下题
+        if ($res) {
+            $this -> showResult(0, '新增评论成功');
         } else {
             $this -> showResult(1, '评论失败 内部错误');
         }
     }
 
-    public function del_comment () {
-        // 删除评论
-        $postData = [];
-        $id = $this -> input -> post('id');
-        $postData['check_status'] = 2;
-        // 2为审核不通过 下同
-        $delRes = $this -> forum_model -> del_comment($postData, $id);
-        if ($delRes) {
-            $this -> showResult(0, '删除成功');
+    public function add () {
+        $content = $this -> input -> post('content');  // 获取传送的content参数
+        $uid = self::$_loginUserInfo -> uid;
+        $postData = [
+            'pid' => 0,
+            'content' => $content,
+            'uid' => $uid
+        ];
+        $res = $this -> forum_model -> add_reply($postData); // 调用model方法 添加线下题
+        if ($res) {
+            $this -> showResult(0, '新增评论成功');
         } else {
-            $this -> showResult(1, '删除失败 内部原因');
+            $this -> showResult(1, '评论失败 内部错误');
         }
     }
 
-    public function del_forum () {
-        // 删除文章
-        $postData = [];
-        $id = $this -> input -> post('id');
-        $postData['check_status'] = 2;
-        $delRes = $this -> forum_model -> del_forum($postData, $id);
-        if ($delRes) {
-            $this -> showResult(0, '删除成功');
+    public function del () {
+        $id = $this -> input -> get('id');  // 获取传送的content参数
+
+        $res = $this -> forum_model -> del_reply(['id' => $id]); // 调用model方法 添加线下题
+        if ($res) {
+            redirect('forum');
         } else {
-            $this -> showResult(1, '删除失败 内部原因');
+            echo '删除失败 内部错误';
         }
     }
 

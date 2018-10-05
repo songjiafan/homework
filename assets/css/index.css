@@ -2,11 +2,15 @@ body{
     background-color: #EFF2F7;
 }
 #container{
-    width: 80%;
-    height: 200px;
-    margin: 100px auto;
+    width: 90%;
+    margin: 50px auto;
 }
 a{
     text-decoration: none;
+}
+.date_content {
+
+}
+.img_content{
 }
 

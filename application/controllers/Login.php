@@ -35,7 +35,7 @@ class Login extends CI_Controller {
     }
 
     public function logout(){
-        $this -> session -> unset_userdata('loginUser');
-        redirect('login');
+        $this -> session -> unset_userdata('loginUser'); // 登出 删除session
+        redirect('login'); // 重定向到login页面
     }
 }
